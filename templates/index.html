@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>landing</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            user-select: none;
+        }
+ 
+        .fullscreen-div {
+            top: 0;
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+        }
+
+        .slide {
+			color: yellow;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 2em;
+        }
+
+    </style>
+</head>
+
+<body>
+   <canvas id="renderCanvas" class="fullscreen-div">SCENE</canvas>
+</body>
+
+</html>
