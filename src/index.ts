@@ -10,16 +10,6 @@ import manSrc from './assets/Mts_Animation_Set_07_09_clean.glb'
 // @ts-ignore
 import exrSrc from './assets/evening_road_01_puresky_HD.exr'
 
-const duplicate = function (container: any, offsetX: any, offsetZ: any) {
-     let entries = container.instantiateModelsToScene(undefined, false, { doNotInstantiate: true });
-
-     for (let node of entries.rootNodes) {
-         node.position.x += offsetX;
-         node.position.z += offsetZ;
-     }
-
-     return entries;
-}
 //
 const canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
 const engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true })
@@ -30,6 +20,7 @@ const createScene = async function () {
     camera.setPosition(new BABYLON.Vector3(0, 5, -30));
     camera.attachControl(canvas, true);
 
+    /** *****************/
     const customMesh = new BABYLON.Mesh("custom", scene);
     const geometry = new BABYLON.Geometry(BABYLON.Geometry.RandomId(), scene, undefined, false, customMesh)
     geometry._boundingInfo = new BABYLON.BoundingInfo(new BABYLON.Vector3(0, 0, 0), new BABYLON.Vector3(10, 10, 10)); // set your own bounding info
@@ -51,61 +42,20 @@ const createScene = async function () {
     vertexData.indices = indices;
     vertexData.normals = normals;
     vertexData.colors = colors;
-
-    //Apply vertexData to custom mesh
     vertexData.applyToMesh(customMesh);
 
+    /** ************************/
+    var path = [];
+    path.push(new BABYLON.Vector3(3, 0, 0));
+    path.push(new BABYLON.Vector3(3, 0, 3));
+    path.push(new BABYLON.Vector3(0, 0, 3));
+    path.push(new BABYLON.Vector3(0, 0, 0));
+    path.push(new BABYLON.Vector3(3, 0, 0));
+
+    const linesMesh = BABYLON.MeshBuilder.CreateLines('lines', { points: path }, scene);
 
 
-
-     const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0), scene)
-
-     // const jellyContainer = await BABYLON.SceneLoader.LoadAssetContainerAsync("", manSrc, scene)
-     // jellyContainer.addAllToScene()
-     // jellyContainer.animationGroups.forEach(animationGroup => animationGroup.stop());
-
-     // jellyContainer.animationGroups[1].loopAnimation = true
-     // jellyContainer.animationGroups[1].play()
-     // jellyContainer.animationGroups[1].onAnimationGroupEndObservable.add(function () {
-     //     // setTimeout(() => {
-     //     //     jellyContainer.animationGroups[1].play();
-     //     // }, Math.random() * 3000)
-     // })
-     // for (let i = 0; i < jellyContainer.materials.length; ++i) {
-     //     //jellyContainer.materials[i].diffuseTexture = texture
-     // }
-
-     // const clone = duplicate(jellyContainer, 2, 0)
-     // clone.animationGroups[1].loopAnimation = true
-     // setTimeout(() => {
-     //     clone.animationGroups[1].play();
-     // })
-     // clone.animationGroups[1].onAnimationGroupEndObservable.add(function () {
-     //     setTimeout(() => {
-     //         clone.animationGroups[1].play();
-     //     }, Math.random() * 3000)
-     // })
-     // const clone2 = duplicate(jellyContainer, -2, 0)
-     // clone2.animationGroups[1].loopAnimation = true
-     // setTimeout(() => {
-     //     clone2.animationGroups[1].play();
-     // }, Math.random() * 3000)
-     // clone2.animationGroups[1].onAnimationGroupEndObservable.add(function () {
-     //     setTimeout(() => {
-     //         clone2.animationGroups[1].play();
-     //     }, Math.random() * 3000)
-     // })
-     //
-     // const clone3 = duplicate(jellyContainer, -2, 2)
-     // clone3.animationGroups[1].loopAnimation = true
-     // setTimeout(() => {
-     //     clone3.animationGroups[1].play();
-     // }, Math.random() * 3000)
-     // clone3.animationGroups[1].onAnimationGroupEndObservable.add(function () {
-     //     setTimeout(() => {
-     //         clone3.animationGroups[1].play();
-     //     }, Math.random() * 3000)
-     // })
+    const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0), scene)
 }
  createScene().then(() => {
      engine.runRenderLoop(function(){
