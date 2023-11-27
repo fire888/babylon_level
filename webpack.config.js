@@ -20,21 +20,13 @@ module.exports = (env, { mode }) => ({
     output: {
         filename: 'bundle.js',
         globalObject: 'this',
-        library: 'Landing',
-        libraryTarget: 'umd',
         path: path.resolve(__dirname, 'dist'),
-        clean: true
     },
     plugins: [
         new HtmlWebpackPlugin({
             template: './templates/index.html'
         }),
         new MiniCssExtractPlugin(),
-        new CopyPlugin({
-		    patterns: [
-			    { from: './src/assets', to: 'assets' }
-		    ]
-		}),
         new webpack.DefinePlugin({
             __mode__: JSON.stringify(mode)
         }),
