@@ -1,4 +1,8 @@
 import * as BABYLON from "@babylonjs/core/Legacy/legacy";
+const { sin, cos, PI, random } = Math
+const PI2 = PI * 2
+
+const ranMinus = (v: number): number => (random() -.5) * v
 
 export class TownScheme {
     private _linesMesh: BABYLON.LinesMesh
@@ -10,14 +14,20 @@ export class TownScheme {
     }
 
     async init (params: any) {
-        console.log('$%%$%')
+        const R:number = 15
+        const N:number = 10
+        const MAX_RAN = R
 
-        const path = []
-        path.push(new BABYLON.Vector3(3, 0, 0))
-        path.push(new BABYLON.Vector3(3, 0, 3))
-        path.push(new BABYLON.Vector3(0, 0, 3))
-        path.push(new BABYLON.Vector3(0, 0, 0))
-        path.push(new BABYLON.Vector3(3, 0, 0))
+        type Path = BABYLON.Vector3[]
+        const path:Path = []
+
+        for (let i = 0; i < N; ++i) {
+            path.push(new BABYLON.Vector3(
+                sin(i / N * PI2) * R + random() * ranMinus(MAX_RAN),
+                0,
+                cos(i / N * PI2) * R + random() * ranMinus(MAX_RAN)
+            ))
+        }
 
         this._linesMesh = BABYLON.MeshBuilder.CreateLines('lines', { points: path }, this._scene)
     }
