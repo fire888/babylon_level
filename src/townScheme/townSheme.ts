@@ -53,7 +53,7 @@ export class TownScheme {
         const N: number = 10
 
         const ROUNDS: number = 4
-        const RAD: number = 15
+        const RAD: number = 20
 
         /** draw round */
         for (let i: number = 0; i < ROUNDS; ++i) {
@@ -70,11 +70,11 @@ export class TownScheme {
                 const sinNext = sin(phaseNext * PI2)
                 const cosNext = cos(phaseNext * PI2)
 
-                let p0 = new BABYLON.Vector3(sinPrev * r + ranMinus(r / 2), 0, cosPrev * r + ranMinus(r / 2))
+                let p0 = new BABYLON.Vector3(sinPrev * r + ranMinus(r * .4), 0, cosPrev * r + ranMinus(r * .4))
                 if (saved) {
                     p0 = saved
                 }
-                let p1 = new BABYLON.Vector3(sinNext * r + ranMinus(r / 2), 0, cosNext * r + ranMinus(r / 2))
+                let p1 = new BABYLON.Vector3(sinNext * r + ranMinus(r * .4), 0, cosNext * r + ranMinus(r * .4))
                 saved = p1
 
                 if (j === N - 1) {
