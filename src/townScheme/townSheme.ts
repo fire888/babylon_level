@@ -48,18 +48,20 @@ export class TownScheme {
     }
 
     async init (params: any) {
-        const data = []
-
         const N: number = 10
-
         const ROUNDS: number = 4
-        const RAD: number = 20
+        const RAD: number = 30
 
         /** draw round */
-        for (let i: number = 0; i < ROUNDS; ++i) {
-            const segments = []
-            const r: number = RAD / ROUNDS * (ROUNDS - i)
+        const circles: BABYLON.Vector3[][][] = []
 
+        for (let i: number = 0; i < ROUNDS; ++i) {
+            const segments: BABYLON.Vector3[][] = []
+            let r: number = RAD / ROUNDS * (ROUNDS - i)
+            if (i === ROUNDS - 1) {
+                r = RAD * 0.1
+            }
+            const maxRand: number = r * .3
             /** draw single segment of round */
             let saved: null | BABYLON.Vector3 = null
             for (let j: number = 0; j < N; ++j) {
@@ -70,11 +72,11 @@ export class TownScheme {
                 const sinNext = sin(phaseNext * PI2)
                 const cosNext = cos(phaseNext * PI2)
 
-                let p0 = new BABYLON.Vector3(sinPrev * r + ranMinus(r * .4), 0, cosPrev * r + ranMinus(r * .4))
+                let p0 = new BABYLON.Vector3(sinPrev * r + ranMinus(maxRand), 0, cosPrev * r + ranMinus(maxRand))
                 if (saved) {
                     p0 = saved
                 }
-                let p1 = new BABYLON.Vector3(sinNext * r + ranMinus(r * .4), 0, cosNext * r + ranMinus(r * .4))
+                let p1 = new BABYLON.Vector3(sinNext * r + ranMinus(maxRand), 0, cosNext * r + ranMinus(maxRand))
                 saved = p1
 
                 if (j === N - 1) {
@@ -83,10 +85,37 @@ export class TownScheme {
                 }
 
                 const linePoints: BABYLON.Vector3[] = [p0, p1]
-                BABYLON.MeshBuilder.CreateLines('lines3', { points: linePoints }, this._scene)
                 segments.push(linePoints)
             }
-            data.push(segments)
+            circles.push(segments)
+        }
+        console.log(circles)
+
+        /** create segments by rounds */
+        const segments: any[] = []
+        for (let i: number = 1; i < circles.length; ++i) {
+            for (let j: number = 0; j < circles[i].length; ++j) {
+                segments.push({
+                    outerLine: circles[i - 1][j],
+                    innerLine: circles[i][j],
+                })
+            }
+        }
+
+        const color: BABYLON.Color4 = new BABYLON.Color4(1, 0, 0, .5)
+
+        for (let i: number = 0; i < segments.length; ++i) {
+            const { outerLine, innerLine } = segments[i]
+            const c: BABYLON.Color4[] = []
+            c.push(color, color, color, color, color)
+            const path = [
+                outerLine[0],
+                outerLine[1],
+                innerLine[1],
+                innerLine[0],
+                outerLine[0],
+            ]
+            BABYLON.MeshBuilder.CreateLines('lines_' + i, { points: path, colors: c }, this._scene)
         }
     }
     async destroy () {}
