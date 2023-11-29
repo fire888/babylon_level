@@ -19,6 +19,25 @@ const createPath = (n: number, r: number, maxRandom: number): Path => {
 }
 
 
+// enum s {
+//     open,
+//     oToC,
+//     closed,
+//     cToO
+// }
+// console.log(s.open)
+//
+// const aaa = (a: number, b: (n: number) => void): void => {
+//     b(a)
+//     //console.log(b(a))
+// }
+//
+// aaa(5, (n) => {
+//     console.log(n)
+// })
+
+
+
 export class TownScheme {
     private _linesMesh: BABYLON.LinesMesh
     readonly _scene: BABYLON.Scene
@@ -29,26 +48,46 @@ export class TownScheme {
     }
 
     async init (params: any) {
+        const data = []
+
         const N: number = 10
-        const R: number = 15
-        const RAN: number = R * 0.7
-        const path:Path = createPath(N, R, RAN)
-        BABYLON.MeshBuilder.CreateLines('lines1', { points: path }, this._scene)
 
-        const R1: number = R - R * .3
-        const RAN1: number = RAN * .5
-        const path1:Path = createPath(N, R1, RAN1)
-        BABYLON.MeshBuilder.CreateLines('lines2', { points: path1 }, this._scene)
+        const ROUNDS: number = 4
+        const RAD: number = 15
 
-        const R2: number = R1 - R1 * .3
-        const RAN2: number = RAN1 * .5
-        const path2:Path = createPath(N, R2, RAN2)
-        BABYLON.MeshBuilder.CreateLines('lines3', { points: path2 }, this._scene)
+        /** draw round */
+        for (let i: number = 0; i < ROUNDS; ++i) {
+            const segments = []
+            const r: number = RAD / ROUNDS * (ROUNDS - i)
 
-        const R3: number = R * .1
-        const RAN3: number = RAN2 * .5
-        const path3: Path = createPath(N, R3, RAN3)
-        BABYLON.MeshBuilder.CreateLines('lines3', { points: path3 }, this._scene)
+            /** draw single segment of round */
+            let saved: null | BABYLON.Vector3 = null
+            for (let j: number = 0; j < N; ++j) {
+                const phasePrev = j / N
+                let phaseNext = (j + 1) / N
+                const sinPrev = sin(phasePrev * PI2)
+                const cosPrev = cos(phasePrev * PI2)
+                const sinNext = sin(phaseNext * PI2)
+                const cosNext = cos(phaseNext * PI2)
+
+                let p0 = new BABYLON.Vector3(sinPrev * r + ranMinus(r / 2), 0, cosPrev * r + ranMinus(r / 2))
+                if (saved) {
+                    p0 = saved
+                }
+                let p1 = new BABYLON.Vector3(sinNext * r + ranMinus(r / 2), 0, cosNext * r + ranMinus(r / 2))
+                saved = p1
+
+                if (j === N - 1) {
+                    p1 = segments[0][0]
+                    phaseNext = 0
+                }
+
+                const linePoints: BABYLON.Vector3[] = [p0, p1]
+                BABYLON.MeshBuilder.CreateLines('lines3', { points: linePoints }, this._scene)
+                segments.push(linePoints)
+            }
+            data.push(segments)
+        }
     }
     async destroy () {}
     update () {}
