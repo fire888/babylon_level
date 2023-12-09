@@ -13,7 +13,7 @@ export class Studio {
         this.engine = new BABYLON.Engine(this.canvas, true, { preserveDrawingBuffer: true, stencil: true })
         this.scene = new BABYLON.Scene(this.engine)
         this.camera = new BABYLON.ArcRotateCamera("camera1",  0, 0, 0, new BABYLON.Vector3(0, 0, 0), this.scene)
-        this.camera.setPosition(new BABYLON.Vector3(0, 5, -30))
+        this.camera.setPosition(new BABYLON.Vector3(0, 5, 30))
         this.camera.attachControl(this.canvas, true)
 
         const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0), this.scene)

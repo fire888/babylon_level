@@ -1,3 +1,6 @@
+import { getAngleOfLineByTwoPoints, makeParallelWithOffset } from '../helpers/math'
+import { drawLine } from '../buildMesh/drawLine'
+
 import * as BABYLON from "@babylonjs/core/Legacy/legacy";
 const { sin, cos, PI, random } = Math
 const PI2 = PI * 2
@@ -5,40 +8,19 @@ const PI2 = PI * 2
 const ranMinus = (v: number): number => (random() -.5) * v
 
 type Path = BABYLON.Vector3[]
-const createPath = (n: number, r: number, maxRandom: number): Path => {
-    const path: BABYLON.Vector3[] = []
-    for (let i: number = 0; i < n; ++i) {
-        path.push(new BABYLON.Vector3(
-            sin(i / n * PI2) * r + random() * ranMinus(maxRandom),
-            0,
-            cos(i / n * PI2) * r + random() * ranMinus(maxRandom)
-        ))
-    }
-    path.push(path[0])
-    return path
+
+interface IScheme {
+    init: (params: any) => Promise<void>;
+    _scene: BABYLON.Scene;
+    destroy: () => void;
+    update: () => void;
 }
 
+const p1 = new BABYLON.Vector3(0, 0, 0)
+const p2 = new BABYLON.Vector3(-1, 0, 0)
+console.log('---', getAngleOfLineByTwoPoints(p1, p2))
 
-// enum s {
-//     open,
-//     oToC,
-//     closed,
-//     cToO
-// }
-// console.log(s.open)
-//
-// const aaa = (a: number, b: (n: number) => void): void => {
-//     b(a)
-//     //console.log(b(a))
-// }
-//
-// aaa(5, (n) => {
-//     console.log(n)
-// })
-
-
-
-export class TownScheme {
+export class TownScheme implements IScheme{
     private _linesMesh: BABYLON.LinesMesh
     readonly _scene: BABYLON.Scene
     scheme: any = {}
@@ -47,7 +29,7 @@ export class TownScheme {
         this._scene = scene
     }
 
-    async init (params: any) {
+    async init (params: any): Promise<void> {
         const N: number = 10
         const ROUNDS: number = 4
         const RAD: number = 30
@@ -59,7 +41,7 @@ export class TownScheme {
             const segments: BABYLON.Vector3[][] = []
             let r: number = RAD / ROUNDS * (ROUNDS - i)
             if (i === ROUNDS - 1) {
-                r = RAD * 0.1
+                r = RAD * 0.2
             }
             const maxRand: number = r * .3
             /** draw single segment of round */
@@ -102,12 +84,11 @@ export class TownScheme {
             }
         }
 
+        /** draw segments */
         const color: BABYLON.Color4 = new BABYLON.Color4(1, 0, 0, .5)
 
         for (let i: number = 0; i < segments.length; ++i) {
             const { outerLine, innerLine } = segments[i]
-            const c: BABYLON.Color4[] = []
-            c.push(color, color, color, color, color)
             const path = [
                 outerLine[0],
                 outerLine[1],
@@ -115,11 +96,44 @@ export class TownScheme {
                 innerLine[0],
                 outerLine[0],
             ]
-            BABYLON.MeshBuilder.CreateLines('lines_' + i, { points: path, colors: c }, this._scene)
+            drawLine(this._scene, path, color)
         }
+
+
+
+        const widthRoad = 2
+        const innerSegments = []
+        const colorY: BABYLON.Color4 = new BABYLON.Color4(1, 1, 0, .5)
+        const colorG: BABYLON.Color4 = new BABYLON.Color4(0, 1, 0, .5)
+        for (let i: number = 0; i < segments.length; ++i) {
+            const item = segments[i]
+            {
+                const l = makeParallelWithOffset(item.outerLine[0], item.outerLine[1], -widthRoad / 2)
+                const path = [l[0], l[1]]
+                drawLine(this._scene, path, colorY)
+            }
+            {
+                const l = makeParallelWithOffset(item.outerLine[1], item.innerLine[1], -widthRoad / 2)
+                const path = [l[0], l[1]]
+                drawLine(this._scene, path, colorG)
+            }
+            {
+                const l = makeParallelWithOffset(item.innerLine[1], item.innerLine[0], -widthRoad / 2)
+                const path = [l[0], l[1]]
+                drawLine(this._scene, path, colorG)
+            }
+            {
+                const l = makeParallelWithOffset(item.innerLine[0], item.outerLine[0], -widthRoad / 2)
+                const path = [l[0], l[1]]
+                drawLine(this._scene, path, colorG)
+            }
+        }
+
+
     }
     async destroy () {}
     update () {}
+    printData () {}
 }
 
 
