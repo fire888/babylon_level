@@ -1,4 +1,4 @@
-import { getAngleOfLineByTwoPoints, makeParallelWithOffset } from '../helpers/math'
+import { getAngleOfLineByTwoPoints, makeParallelWithOffset, makeCopyPathWithOffset } from '../helpers/math'
 import { drawLine } from '../buildMesh/drawLine'
 
 import * as BABYLON from "@babylonjs/core/Legacy/legacy";
@@ -99,37 +99,17 @@ export class TownScheme implements IScheme{
             drawLine(this._scene, path, color)
         }
 
-
-
-        const widthRoad = 2
-        const innerSegments = []
-        const colorY: BABYLON.Color4 = new BABYLON.Color4(1, 1, 0, .5)
-        const colorG: BABYLON.Color4 = new BABYLON.Color4(0, 1, 0, .5)
+        /** calculate inners ***/
         for (let i: number = 0; i < segments.length; ++i) {
-            const item = segments[i]
-            {
-                const l = makeParallelWithOffset(item.outerLine[0], item.outerLine[1], -widthRoad / 2)
-                const path = [l[0], l[1]]
-                drawLine(this._scene, path, colorY)
-            }
-            {
-                const l = makeParallelWithOffset(item.outerLine[1], item.innerLine[1], -widthRoad / 2)
-                const path = [l[0], l[1]]
-                drawLine(this._scene, path, colorG)
-            }
-            {
-                const l = makeParallelWithOffset(item.innerLine[1], item.innerLine[0], -widthRoad / 2)
-                const path = [l[0], l[1]]
-                drawLine(this._scene, path, colorG)
-            }
-            {
-                const l = makeParallelWithOffset(item.innerLine[0], item.outerLine[0], -widthRoad / 2)
-                const path = [l[0], l[1]]
-                drawLine(this._scene, path, colorG)
-            }
+            const { outerLine, innerLine } = segments[i]
+            const copy = makeCopyPathWithOffset([
+                outerLine[0],
+                outerLine[1],
+                innerLine[1],
+                innerLine[0],
+                //outerLine[0],
+            ], -1, this._scene)
         }
-
-
     }
     async destroy () {}
     update () {}
