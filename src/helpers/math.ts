@@ -79,9 +79,9 @@ export const makeCopyPathWithOffset = (path: BABYLON.Vector3[], offset: number, 
         }
     }
 
-    for (let i = 0; i < parallelLines.length; ++i) {
+    //for (let i = 0; i < parallelLines.length; ++i) {
         //drawLine(scene, parallelLines[i], new BABYLON.Color4(0, 1, 1, 1))
-    }
+    //}
 
     const points = []
     for (let i = 1; i < parallelLines.length; ++i) {

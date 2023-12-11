@@ -102,7 +102,7 @@ export class TownScheme implements IScheme{
         /** calculate inners ***/
         for (let i: number = 0; i < segments.length; ++i) {
             const { outerLine, innerLine } = segments[i]
-            const copy = makeCopyPathWithOffset([
+            const innerCopy = makeCopyPathWithOffset([
                 outerLine[0],
                 outerLine[1],
                 innerLine[1],
