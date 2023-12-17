@@ -1,3 +1,5 @@
+import './tsTeach/tsteash'
+
 import { TownScheme } from './townScheme/townSheme'
 import { BuildMesh } from "./buildMesh/buildMesh"
 import { Studio } from "./studio"
