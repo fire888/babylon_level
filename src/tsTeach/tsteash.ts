@@ -1,3 +1,5 @@
+import './conf'
+
 function simpleDecorator(constructor: Function) {
    // console.log('$%$%$%4 simpleDecorator', constructor)
    // console.log('$%$%$%4 simpleDecorator', constructor.name)
@@ -20,7 +22,7 @@ function methodDesc(target: any, methodName: string, propDesc?: PropertyDescript
     console.log('methodDesc', target, methodName, propDesc)
 
     const audit = function (this: any) {
-        console.log('1111')
+        //console.log('1111')
         //target[methodName].apply(this, arguments)
     }
     target[methodName] = audit
