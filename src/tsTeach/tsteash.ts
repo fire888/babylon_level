@@ -1,5 +1,3 @@
-console.log('!!!--')
-
 function simpleDecorator(constructor: Function) {
    // console.log('$%$%$%4 simpleDecorator', constructor)
    // console.log('$%$%$%4 simpleDecorator', constructor.name)
@@ -64,13 +62,6 @@ const cc1 = s1.concatArray([1, 1, 1])
 //const cc2 = s1.concatArray(['a', 'a', 'a'])
 //console.log('^^^^^', cc2)
 
-function compareTwoValues(
-    input: string | number | Date,
-    compareTo: string | number | Date,
-) {
-    
-}
-
 type dateNumberOrString<T> = 
     T extends Date 
         ? Date
@@ -80,10 +71,8 @@ type dateNumberOrString<T> =
                 ? Date | number | string 
                 : never
             
-function compareValues<T extends string | number | Date | boolean>(
-    input: T, compareTo: dateNumberOrString<T>
-): void {
-    //console.log(input === compareTo)
+function compareValues<T extends string | number | Date | boolean>(input: T, compareTo: dateNumberOrString<T>): void {
+    console.log(input, compareTo)
 }
 
-compareValues<Date>(new Date(), new Date())
+compareValues(new Date(), new Date())
