@@ -17,12 +17,24 @@ export class BuildMesh extends BABYLON.Mesh {
         const c = []
         const color1 = [.3, 1, 1, 1]
         const color6 = [...color1, ...color1, ...color1, ...color1, ...color1, ...color1]
+        const colorR = [1, 0, 1, 1]
         const uvs = []
         const uv6 = [0, 0, .25, 0, .25, .25, 0, 0, .25, .25, 0, .25]
 
         for (let i = 0; i < params.length; ++i) {
             if (params[i].type === 'house') {
                 const { segPath } = params[i]
+
+                let centerX = 0
+                let centerZ = 0
+
+                for (let i = 1; i < segPath.length; ++i) {
+                    centerX += segPath[i].x
+                    centerZ += segPath[i].z
+                }
+
+                centerX /= (segPath.length - 1)
+                centerZ /= (segPath.length - 1)
 
                 for (let i = 1; i < segPath.length; ++i) {
                     const prev = segPath[i - 1]
@@ -48,8 +60,22 @@ export class BuildMesh extends BABYLON.Mesh {
                     ++indCount
 
                     c.push(...color6)
-
                     uvs.push(...uv6)
+
+
+                    v.push(
+                        current.x, 5, current.z,
+                        prev.x, 5, prev.z,
+                        centerX, 5, centerZ,
+                    )
+                    ind.push(indCount)
+                    ++indCount
+                    ind.push(indCount)
+                    ++indCount
+                    ind.push(indCount)
+                    ++indCount
+                    c.push(...colorR, ...colorR, ...colorR)
+                    uvs.push(0, 0, 0, 0, 0, 0)
 
                     if (i === segPath.length - 1) {
                         const prev = segPath[i]
@@ -75,8 +101,22 @@ export class BuildMesh extends BABYLON.Mesh {
                         ++indCount
 
                         c.push(...color6)
-
                         uvs.push(...uv6)
+
+
+                        v.push(
+                            current.x, 5, current.z,
+                            prev.x, 5, prev.z,
+                            centerX, 5, centerZ,
+                        )
+                        ind.push(indCount)
+                        ++indCount
+                        ind.push(indCount)
+                        ++indCount
+                        ind.push(indCount)
+                        ++indCount
+                        c.push(...colorR, ...colorR, ...colorR)
+                        uvs.push(0, 0, 0, 0, 0, 0)
                     }
                 }
             }
