@@ -1,4 +1,4 @@
-import './tsTeach/tsteash'
+//import './tsTeach/tsteash'
 
 import { TownScheme } from './townScheme/townSheme'
 import { BuildMesh } from "./buildMesh/buildMesh"
@@ -11,8 +11,10 @@ const createScene = async function () {
     const linesScheme = new TownScheme(studio.scene)
     await linesScheme.init({})
 
+    const dataTown = linesScheme.dataTown
+
     const customMesh = new BuildMesh('custom', studio.scene)
-    await customMesh.init({})
+    await customMesh.init(dataTown)
 
 }
 createScene().then()

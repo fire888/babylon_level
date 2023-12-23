@@ -49,7 +49,7 @@ module.exports = (env, { mode }) => ({
                 test: /\.css$/i,
                 use: [MiniCssExtractPlugin.loader, 'css-loader'],
             },
-            { test: /\.(obj|glb|FBX|fbx|3DS|3ds|exr)$/,
+            { test: /\.(obj|glb|FBX|fbx|3DS|3ds|exr|jpg)$/,
                 use: [{
                     loader: 'file-loader',
                     options: {

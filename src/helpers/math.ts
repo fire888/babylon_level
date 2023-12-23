@@ -105,3 +105,7 @@ export const makeCopyPathWithOffset = (path: BABYLON.Vector3[], offset: number, 
 }
 
 
+export const ranMinus = (v: number): number => (random() -.5) * v
+
+export const fillV4 = (v1: number[], v2: number[], v3: number[], v4: number[]): number[] => [...v1, ...v2, ...v3, ...v1, ...v3, ...v4]
+

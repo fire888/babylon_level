@@ -1,11 +1,10 @@
-import { getAngleOfLineByTwoPoints, makeParallelWithOffset, makeCopyPathWithOffset } from '../helpers/math'
+import { getAngleOfLineByTwoPoints, makeParallelWithOffset, makeCopyPathWithOffset, ranMinus } from '../helpers/math'
 import { drawLine } from '../buildMesh/drawLine'
+import * as BABYLON from "@babylonjs/core/Legacy/legacy"
 
-import * as BABYLON from "@babylonjs/core/Legacy/legacy";
 const { sin, cos, PI, random } = Math
 const PI2 = PI * 2
 
-const ranMinus = (v: number): number => (random() -.5) * v
 
 type Path = BABYLON.Vector3[]
 
@@ -16,14 +15,9 @@ interface IScheme {
     update: () => void;
 }
 
-const p1 = new BABYLON.Vector3(0, 0, 0)
-const p2 = new BABYLON.Vector3(-1, 0, 0)
-console.log('---', getAngleOfLineByTwoPoints(p1, p2))
-
 export class TownScheme implements IScheme{
-    private _linesMesh: BABYLON.LinesMesh
     readonly _scene: BABYLON.Scene
-    scheme: any = {}
+    dataTown: any[] = []
 
     constructor(scene: BABYLON.Scene) {
         this._scene = scene
@@ -71,13 +65,14 @@ export class TownScheme implements IScheme{
             }
             circles.push(segments)
         }
-        console.log(circles)
 
         /** create segments by rounds */
         const segments: any[] = []
         for (let i: number = 1; i < circles.length; ++i) {
             for (let j: number = 0; j < circles[i].length; ++j) {
                 segments.push({
+                    lineCircle: i,
+                    lineRay: j,
                     outerLine: circles[i - 1][j],
                     innerLine: circles[i][j],
                 })
@@ -86,7 +81,6 @@ export class TownScheme implements IScheme{
 
         /** draw segments */
         const color: BABYLON.Color4 = new BABYLON.Color4(1, 0, 0, .5)
-
         for (let i: number = 0; i < segments.length; ++i) {
             const { outerLine, innerLine } = segments[i]
             const path = [
@@ -101,14 +95,14 @@ export class TownScheme implements IScheme{
 
         /** calculate inners ***/
         for (let i: number = 0; i < segments.length; ++i) {
-            const { outerLine, innerLine } = segments[i]
+            const { outerLine, innerLine, lineRay, lineCircle } = segments[i]
             const innerCopy = makeCopyPathWithOffset([
                 outerLine[0],
                 outerLine[1],
                 innerLine[1],
                 innerLine[0],
-                //outerLine[0],
             ], -1, this._scene)
+            this.dataTown.push({ segPath: innerCopy, lineRay, lineCircle, type: 'house' })
         }
     }
     async destroy () {}

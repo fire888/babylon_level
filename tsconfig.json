@@ -1,6 +1,10 @@
 {
-  "include": ["./src"],
+  "include": ["src", "src/index.d.ts"],
   "compilerOptions": {
+    "typeRoots": [
+      "node_modules/@types",
+      "src/types"
+    ],
     "baseUrl": "./src",
     "module": "es6",
     "target": "es6",
